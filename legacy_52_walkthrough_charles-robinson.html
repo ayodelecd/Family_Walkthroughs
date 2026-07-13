@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Legacy 52 Project — A Walkthrough for the Charles Robinson Family</title>
+<style>
+  :root{
+    --paper:#F4EFE4;
+    --surface:#FBF8F1;
+    --surface-sink:#EFE9DB;
+    --ink:#262420;
+    --muted:#6E6858;
+    --faint:#98917F;
+    --line:#DDD5C4;
+    --line-strong:#C7BDA6;
+    --pine:#2E5842;
+    --pine-soft:#5C8A6F;
+    --clay:#A75A3A;
+    --clay-soft:#C98A6C;
+    --shadow:0 1px 2px rgba(60,50,30,.05), 0 8px 24px rgba(60,50,30,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#1C1B18;
+      --surface:#262420;
+      --surface-sink:#211F1B;
+      --ink:#EFEADD;
+      --muted:#ADA592;
+      --faint:#7C7565;
+      --line:#3A382F;
+      --line-strong:#4E4A3D;
+      --pine:#7FB395;
+      --pine-soft:#5C8A6F;
+      --clay:#D98F68;
+      --clay-soft:#B0704E;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.28);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    display:flex; justify-content:center;
+    padding:clamp(1.25rem,4vw,3rem) 1.1rem;
+  }
+  .wrap{width:100%; max-width:720px}
+
+  .eyebrow{
+    font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--faint); font-weight:600; margin:0 0 .55rem;
+  }
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-weight:600; font-size:clamp(26px,5vw,34px); line-height:1.12;
+    margin:0 0 .5rem; letter-spacing:-.01em;
+  }
+  .lede{
+    font-size:15px; color:var(--muted); margin:0 0 1.9rem; max-width:56ch;
+  }
+
+  /* ---- the surveyor's spine ---- */
+  .spine{margin:0 0 1.4rem; padding:0 4px}
+  .spine svg{display:block; width:100%; height:auto; overflow:visible}
+  .tick{stroke:var(--line-strong); stroke-width:1.5}
+  .rail{stroke:var(--line-strong); stroke-width:2; fill:none}
+  .rail-fill{
+    stroke:var(--pine); stroke-width:2.5; fill:none;
+    stroke-dasharray:1; stroke-dashoffset:1;
+    transition:stroke-dashoffset .55s cubic-bezier(.4,0,.2,1);
+  }
+  .marker{cursor:pointer}
+  .marker .halo{fill:transparent}
+  .marker .node{fill:var(--surface); stroke:var(--line-strong); stroke-width:1.6; transition:all .25s}
+  .marker.done .node{fill:var(--pine); stroke:var(--pine)}
+  .marker.active .node{fill:var(--paper); stroke:var(--pine); stroke-width:3}
+  .marker.active.ask .node{stroke:var(--clay)}
+  .marker.done.ask .node{fill:var(--clay); stroke:var(--clay)}
+  .marker .num{
+    font-family:Georgia,serif; font-size:12px; fill:var(--faint);
+    text-anchor:middle; dominant-baseline:middle;
+  }
+  .marker.active .num{fill:var(--pine); font-weight:700}
+  .marker.active.ask .num{fill:var(--clay)}
+  .marker.done .num{fill:var(--surface)}
+  .marker:focus{outline:none}
+  .marker:focus-visible .halo{stroke:var(--pine); stroke-width:1.5; fill:rgba(46,88,66,.06)}
+
+  /* ---- the card ---- */
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    padding:clamp(1.4rem,4vw,2rem);
+    min-height:280px;
+    position:relative; overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background:var(--pine); opacity:.9;
+  }
+  .card.is-heart::before{background:var(--clay)}
+
+  .tag{
+    font-size:12px; letter-spacing:.13em; text-transform:uppercase;
+    font-weight:700; margin:0 0 .7rem; color:var(--pine);
+  }
+  .card.is-heart .tag{color:var(--clay)}
+  .card h2{
+    font-family:Georgia,"Times New Roman",serif;
+    font-weight:600; font-size:clamp(21px,4.2vw,27px); line-height:1.18;
+    margin:0 0 .75rem; letter-spacing:-.005em;
+  }
+  .card p.body{font-size:16px; color:var(--ink); margin:0; max-width:60ch}
+  .card p.body + p.body{margin-top:.8rem}
+
+  /* ---- per-beat figures ---- */
+  .fig{margin-top:1.2rem}
+  .equiv{display:flex; align-items:center; gap:.9rem; flex-wrap:wrap}
+  .equiv .box{
+    flex:1 1 150px; min-width:140px; border-radius:10px; padding:.85rem 1rem;
+    border:1px solid var(--line);
+  }
+  .equiv .box.land{background:var(--surface-sink)}
+  .equiv .box.co{background:rgba(46,88,66,.09); border-color:var(--pine-soft)}
+  .equiv .box .k{font-family:Georgia,serif; font-size:22px; font-weight:600; line-height:1}
+  .equiv .box .l{font-size:12.5px; color:var(--muted); margin-top:.3rem}
+  .equiv .arrow{font-size:20px; color:var(--faint); flex:0 0 auto}
+  .equiv .box.co .k{color:var(--pine)}
+
+  .chips{display:flex; gap:.6rem; flex-wrap:wrap}
+  .chip{
+    font-size:13.5px; border:1px solid var(--line-strong); border-radius:999px;
+    padding:.5rem .95rem; background:var(--surface-sink); color:var(--ink);
+  }
+  .chip .d{color:var(--muted); font-size:12.5px}
+
+  .asks{list-style:none; margin:0; padding:0; counter-reset:a}
+  .asks li{
+    position:relative; padding:.15rem 0 .95rem 2.3rem; counter-increment:a;
+    font-size:16px; border-bottom:1px solid var(--line);
+  }
+  .asks li:last-child{border-bottom:none; padding-bottom:.15rem}
+  .asks li::before{
+    content:counter(a); position:absolute; left:0; top:.05rem;
+    width:1.6rem; height:1.6rem; border-radius:50%;
+    background:var(--clay); color:#FBF8F1;
+    font-family:Georgia,serif; font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .answer-chips{display:flex; gap:.55rem; flex-wrap:wrap; margin-top:.6rem}
+  .answer-chips .chip{background:var(--surface); border-color:var(--clay-soft)}
+  .closing{
+    margin-top:1.2rem; padding-top:1.05rem; border-top:1px solid var(--line);
+    font-size:15px; color:var(--muted); font-style:italic;
+  }
+
+  /* ---- nav ---- */
+  .nav{display:flex; align-items:center; justify-content:space-between; margin-top:1.15rem}
+  .btn{
+    font:inherit; font-size:14px; font-weight:600;
+    padding:.6rem 1.15rem; border-radius:10px; cursor:pointer;
+    background:var(--surface); border:1px solid var(--line-strong); color:var(--ink);
+    transition:background .15s, transform .05s;
+  }
+  .btn:hover{background:var(--surface-sink)}
+  .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.4; cursor:default}
+  .btn:disabled:hover{background:var(--surface)}
+  .btn.primary{background:var(--pine); border-color:var(--pine); color:#FBF8F1}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.primary.ask{background:var(--clay); border-color:var(--clay)}
+  .btn:focus-visible{outline:2px solid var(--pine); outline-offset:2px}
+  .count{font-size:12.5px; color:var(--faint); letter-spacing:.04em}
+
+  .foot{
+    margin-top:1.5rem; text-align:center;
+    font-size:12px; color:var(--faint);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .rail-fill{transition:none}
+    .marker .node{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">The Legacy 52 Project · a walkthrough for the Charles Robinson family line</p>
+  <h1>Grandpa's 52 acres, and the one move that keeps them ours.</h1>
+  <p class="lede">Six short steps, and what we're asking of the Charles Robinson family line specifically. Use the arrow keys, or the buttons below.</p>
+
+  <div class="spine">
+    <svg viewBox="0 0 720 56" aria-hidden="true">
+      <line class="rail" x1="24" y1="28" x2="696" y2="28"/>
+      <path id="railFill" class="rail-fill" d="M24 28 L696 28"/>
+      <g id="markers"></g>
+    </svg>
+  </div>
+
+  <div class="card" id="card">
+    <p class="tag" id="tag"></p>
+    <h2 id="title"></h2>
+    <div id="bodyWrap"></div>
+    <div class="fig" id="fig"></div>
+  </div>
+
+  <div class="nav">
+    <button class="btn" id="back">← Back</button>
+    <span class="count" id="count"></span>
+    <button class="btn primary" id="next">Next →</button>
+  </div>
+
+  <p class="foot">Prepared for the Charles Robinson family line · nothing is signed today · not legal, tax, or investment advice</p>
+</div>
+
+<script>
+const steps=[
+  {
+    tag:"Where we stand · today", heart:true,
+    title:"Fifty-two acres, held in fragile pieces.",
+    body:[
+      "Grandpa left the land to his four children. Three have since passed, so it's now owned in slivers across four estates — some never taken through probate.",
+      "Any single owner, or anyone who buys a sliver, can ask a court to force all 52 acres to be sold. Families lose land this way every year. Ours doesn't have to.",
+      "Your line comes down through Charles Robinson, now passed — his 25% share carries forward to Ayinde Robinson, Solaja Robinson, and Aiye Robinson, pending probate."
+    ]
+  },
+  {
+    tag:"The fix · step one",
+    title:"First, we agree to pause the risk.",
+    body:[
+      "Everyone signs one short agreement: no lawsuits, no outside sales, while we finish probate together.",
+      "Signing changes nothing about who owns what. It just stops the bleeding while we sort it out — as a family, not in a courtroom."
+    ]
+  },
+  {
+    tag:"The fix · step two",
+    title:"Then the land goes into one family company.",
+    body:[
+      "Each of us trades our fraction of the land for the exact same fraction of the company. Nobody gains, nobody loses.",
+      "The Charles Robinson line holds an undivided 25% of the land today, per stirpes under Grandpa's will — so the Charles Robinson line receives the exact same 25% of the company. No more, no less.",
+      "From then on, selling or borrowing against the land takes a 75% family vote — forever. No outsider, and no one of us alone, can move it."
+    ],
+    fig:`<div class="equiv">
+      <div class="box land"><div class="k">25%</div><div class="l">the Charles Robinson line's share of the land</div></div>
+      <div class="arrow">→</div>
+      <div class="box co"><div class="k">25%</div><div class="l">the Charles Robinson line's share of the company</div></div>
+    </div>`
+  },
+  {
+    tag:"The fix · your choice",
+    title:"And if you'd rather have cash, you can.",
+    body:[
+      "Anyone who prefers money over ownership can take a buyout — their share of the land's appraised value, paid over up to seven years — without the land being sold.",
+      "No one is trapped in. No one can be forced out. Both answers are respected."
+    ],
+    fig:`<div class="chips">
+      <span class="chip">Stay in <span class="d">— keep your units</span></span>
+      <span class="chip">Buy out <span class="d">— cash over up to 7 years</span></span>
+    </div>`
+  },
+  {
+    tag:"What it costs",
+    title:"Our $20,000 goes to lawyers, not chickens.",
+    body:[
+      "Almost all of it pays for probate and the deeds — because clean title is the one thing that unlocks everything else.",
+      "Meanwhile the land pays its own taxes: renting the fields, leasing hunting rights, and possibly a timber thinning that could bring real money early."
+    ]
+  },
+  {
+    tag:"What comes later",
+    title:"Once the land is secure, real money becomes possible.",
+    body:[
+      "Clean title qualifies the family for USDA and conservation programs worth far more than our $20,000 — and, in time, the larger family business some of us have been planning.",
+      "That's for later, and the full plans are here for anyone who wants them. Today is only about the land."
+    ]
+  },
+  {
+    tag:"What we're asking · Sunday", heart:true, ask:true,
+    title:"Three things, and one honest answer.",
+    body:[],
+    fig:`<ul class="asks">
+      <li>Help us fill in the family worksheet for the Charles Robinson line — confirming Ayinde Robinson, Solaja Robinson, Aiye Robinson as the heirs, who handled the estate, whether there was a will, and whether it went through probate.</li>
+      <li>Tell us where you stand:
+        <div class="answer-chips">
+          <span class="chip">Stay in</span>
+          <span class="chip">Buy out</span>
+          <span class="chip">Undecided</span>
+        </div>
+      </li>
+      <li>Agree to sign the final agreement once our South Carolina attorney has reviewed it — everyone can read it with their own advisor first.</li>
+    </ul>
+    <p class="closing">Nothing is signed today, and nothing is secret. This is about making sure the land is still ours in fifty years.</p>`
+  }
+];
+
+const n=steps.length;
+const mG=document.getElementById('markers');
+const railFill=document.getElementById('railFill');
+const railLen=railFill.getTotalLength();
+railFill.style.strokeDasharray=railLen;
+railFill.style.strokeDashoffset=railLen;
+
+const X0=24, X1=696, Y=28;
+for(let k=0;k<n;k++){
+  const x=X0+((X1-X0)/(n-1))*k;
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.setAttribute('class','marker'+(steps[k].ask?' ask':''));
+  g.setAttribute('tabindex','0');
+  g.setAttribute('role','button');
+  g.setAttribute('aria-label','Step '+(k+1)+': '+steps[k].title);
+  g.dataset.k=k;
+  g.innerHTML=
+    '<circle class="halo" cx="'+x+'" cy="'+Y+'" r="15"></circle>'+
+    '<circle class="node" cx="'+x+'" cy="'+Y+'" r="9"></circle>'+
+    '<text class="num" x="'+x+'" y="'+(Y+.5)+'">'+(k+1)+'</text>';
+  g.addEventListener('click',()=>go(k));
+  g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();go(k);} });
+  mG.appendChild(g);
+}
+
+const card=document.getElementById('card');
+const back=document.getElementById('back');
+const next=document.getElementById('next');
+let i=0;
+
+function go(k){
+  if(k<0||k>=n) return;
+  i=k;
+  const s=steps[k];
+
+  card.classList.toggle('is-heart', !!s.heart);
+  document.getElementById('tag').textContent=s.tag;
+  document.getElementById('title').textContent=s.title;
+
+  const bw=document.getElementById('bodyWrap');
+  bw.innerHTML=(s.body||[]).map(t=>'<p class="body">'+t+'</p>').join('');
+
+  const fig=document.getElementById('fig');
+  fig.innerHTML=s.fig||'';
+  fig.style.display=s.fig?'block':'none';
+
+  const markers=mG.querySelectorAll('.marker');
+  markers.forEach((m,idx)=>{
+    m.classList.remove('active','done');
+    if(idx<k) m.classList.add('done');
+    if(idx===k) m.classList.add('active');
+  });
+
+  const frac=n===1?0:k/(n-1);
+  railFill.style.strokeDashoffset=railLen-railLen*frac;
+
+  document.getElementById('count').textContent=(k+1)+' of '+n;
+  back.disabled=(k===0);
+
+  const last=(k===n-1);
+  next.textContent=last?'Start over':'Next →';
+  next.classList.toggle('ask', !!s.ask);
+}
+
+back.addEventListener('click',()=>go(i-1));
+next.addEventListener('click',()=>{ i>=n-1 ? go(0) : go(i+1); });
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){ e.preventDefault(); if(i<n-1) go(i+1); }
+  if(e.key==='ArrowLeft'){ e.preventDefault(); if(i>0) go(i-1); }
+});
+
+go(0);
+</script>
+</body>
+</html>
